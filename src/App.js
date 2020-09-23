@@ -103,7 +103,7 @@ class App extends React.Component {
                           <TransfersyUSDContainer />
                         </Grid>
                         <Grid item xs={12} className={classes.footer}>
-                          Interacting with the syUSD contract at: <a target="_blank" href={"https://etherscan.io/token/" + config.CHAI} rel="noopener noreferrer">{config.CHAI}</a><br />
+                          Interacting with the syUSD contract at: <a target="_blank" href={"https://etherscan.io/token/" + config.syUSD} rel="noopener noreferrer">{config.syUSD}</a><br />
                           <TotalSupplyContainer />
                           <a href="/about.html">Learn more about syUSD</a>
                         </Grid>
