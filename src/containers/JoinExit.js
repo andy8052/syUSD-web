@@ -2,7 +2,7 @@ import React from 'react'
 import {withStore} from '@spyna/react-store'
 import {withStyles} from '@material-ui/styles'
 import theme from '../theme/theme'
-import { WadDecimal, getData, toChai, toDai } from '../utils/web3Utils'
+import { WadDecimal, getData, tosyUSD, toyUSD } from '../utils/web3Utils'
 import { join, exit } from '../actions/main'
 
 import Tabs from '@material-ui/core/Tabs'
@@ -58,11 +58,13 @@ class JoinExitContainer extends React.Component {
       const {store} = this.props
       const action = store.get('joinexitAction')
       if (action === 0) {
-        const daiBalanceDecimal = store.get('daiBalanceDecimal')
-        store.set('joinAmount', daiBalanceDecimal)
+        const yusdBalanceDecimal = store.get('yusdBalanceDecimal')
+        store.set('joinAmount', yusdBalanceDecimal)
       } else {
-        const chaiBalanceDecimal = store.get('chaiBalanceDecimal')
-        store.set('exitAmount', chaiBalanceDecimal)
+        const syusdBalanceDecimal = store.get('syusdBalanceDecimal')
+        const syusdUnderlyingBalanceDecimal = store.get('syusdUnderlyingBalanceDecimal')
+        store.set('exitAmount', syusdBalanceDecimal)
+        // store.set('exitAmountUnderlying', syusdUnderlyingBalanceDecimal)
       }
     }
 
@@ -94,17 +96,18 @@ class JoinExitContainer extends React.Component {
         const {classes, store} = this.props
 
         const walletAddress = store.get('walletAddress')
-        const daiBalance = store.get('daiBalance')
-        const daiBalanceDecimal = store.get('daiBalanceDecimal')
-        const chaiBalance = store.get('chaiBalance')
-        const chaiBalanceDecimal = store.get('chaiBalanceDecimal')
+        const yusdBalance = store.get('yusdBalance')
+        const yusdBalanceDecimal = store.get('yusdBalanceDecimal')
+        const syusdBalance = store.get('syusdBalance')
+        const syusdBalanceDecimal = store.get('syusdBalanceDecimal')
+        const syusdUnderlyingBalanceDecimal = store.get('syusdUnderlyingBalanceDecimal')
         const joinAmount = store.get('joinAmount')
         const exitAmount = store.get('exitAmount')
         const web3 = store.get('web3')
         const isSignedIn = walletAddress && walletAddress.length
 
-        const canJoin = joinAmount && (joinAmount.cmp(daiBalanceDecimal) < 1)
-        const canExit = exitAmount && (exitAmount.cmp(chaiBalanceDecimal) < 1)
+        const canJoin = joinAmount && (joinAmount.cmp(yusdBalanceDecimal) < 1)
+        const canExit = exitAmount && (exitAmount.cmp(syusdBalanceDecimal) < 1)
 
         const joinexitAction = store.get('joinexitAction')
 
@@ -119,11 +122,11 @@ class JoinExitContainer extends React.Component {
         <Button variant="subtitle2" className={classes.accountBalance}
       style={{textTransform: 'none'}}
       onClick={this.setMax.bind(this)}
-        >{daiBalance ? `Balance: ${daiBalance} yUSD` : '-'}</Button>
+        >{yusdBalance ? `Balance: ${yusdBalance} yUSD` : '-'}</Button>
         <TextField label="yUSD Amount" placeholder='0' className={classes.input} value={joinAmount.toString() !== "0" ? joinAmount : ''} margin="normal" variant="outlined" type="number" onChange={this.handleInput.bind(this)} InputProps={{ inputProps: { min: 0 },
                                 endAdornment: <InputAdornment className={classes.endAdornment} position="end">yUSD</InputAdornment>
                             }}
-      helperText={(isSignedIn && joinAmount) ? "You will receive approximately " + toChai.bind(this)(web3.utils.toWei(String(joinAmount))) + " syUSD": " "}
+      helperText={(isSignedIn && joinAmount) ? "You will receive approximately " + tosyUSD.bind(this)(web3.utils.toWei(String(joinAmount))) + " syUSD": " "}
         />
                         <Button color='primary'
                             size='large'
@@ -134,15 +137,15 @@ class JoinExitContainer extends React.Component {
                         </Button>
                   </Box>
                   <Box hidden={joinexitAction !== 1}>
-                    <Typography variant='subtitle2'>Convert Chai back to Dai</Typography>
+                    <Typography variant='subtitle2'>Convert syUSD back to yUSD</Typography>
         <Button variant="subtitle2" className={classes.accountBalance}
       style={{textTransform: 'none'}}
       onClick={this.setMax.bind(this)}
-        >{chaiBalance? `Balance: ${chaiBalance} syUSD` : '-'}</Button>
-        <TextField label="CHAI Amount" placeholder='0' className={classes.input} margin="normal" variant="outlined" value={exitAmount.toString() !== "0" ? exitAmount : ''} type="number" onChange={this.handleInput.bind(this)} InputProps={{ inputProps: { min: 0 },
-                            endAdornment: <InputAdornment className={classes.endAdornment} position="end">CHAI</InputAdornment>
+        >{syusdBalance? `Balance: ${syusdBalance} syUSD` : '-'}</Button>
+        <TextField label="syUSD Amount" placeholder='0' className={classes.input} margin="normal" variant="outlined" value={exitAmount.toString() !== "0" ? exitAmount : ''} type="number" onChange={this.handleInput.bind(this)} InputProps={{ inputProps: { min: 0 },
+                            endAdornment: <InputAdornment className={classes.endAdornment} position="end">syUSD</InputAdornment>
                         }}
-      helperText={(isSignedIn && exitAmount) ? "You will receive at least: " + toDai.bind(this)(web3.utils.toWei(String(exitAmount))) + " yUSD": " "}
+      helperText={(isSignedIn && exitAmount) ? "You will receive at least: " + toyUSD.bind(this)(web3.utils.toWei(String(exitAmount))) + " yUSD": " "}
         />
                     <Button color='primary'
                         size='large'

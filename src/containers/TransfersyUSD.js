@@ -2,7 +2,7 @@ import React from 'react';
 import {withStore} from '@spyna/react-store'
 import {withStyles} from '@material-ui/styles';
 import theme from '../theme/theme'
-import { WadDecimal, getData, toDai } from '../utils/web3Utils'
+import { WadDecimal, getData, toyUSD } from '../utils/web3Utils'
 import { transfer } from '../actions/main'
 
 import Box from '@material-ui/core/Box';
@@ -33,7 +33,7 @@ const styles = () => ({
     },
 })
 
-class TransferChaiContainer extends React.Component {
+class TransfersyUSDContainer extends React.Component {
     async componentDidMount() {
         // update data periodically
         this.watchData()
@@ -66,8 +66,8 @@ class TransferChaiContainer extends React.Component {
 
     setMax() {
       const {store} = this.props
-      const chaiBalanceDecimal = store.get('chaiBalanceDecimal')
-      store.set('transferAmount', chaiBalanceDecimal)
+      const syusdBalanceDecimal = store.get('syusdBalanceDecimal')
+      store.set('transferAmount', syusdBalanceDecimal)
     }
 
 
@@ -75,23 +75,23 @@ class TransferChaiContainer extends React.Component {
         const {classes, store} = this.props
 
         const walletAddress = store.get('walletAddress')
-        const chaiBalance = store.get('chaiBalance')
+        const syusdBalance = store.get('syusdBalance')
         const transferAmount = store.get('transferAmount')
         const transferAddress = store.get('transferAddress')
-        const chaiBalanceDecimal = store.get('chaiBalanceDecimal')
+        const syusdBalanceDecimal = store.get('syusdBalanceDecimal')
         const web3 = store.get('web3');
         const isSignedIn = walletAddress && walletAddress.length
 
-        const canTransfer = transferAmount && transferAddress && (transferAmount <= chaiBalanceDecimal)
+        const canTransfer = transferAmount && transferAddress && (transferAmount <= syusdBalanceDecimal)
 
         return <Grid container spacing={3}>
                <Grid item xs={12}><Card><CardContent>
-        <Typography variant='h4'>Transfer Chai</Typography>
-        <Typography variant='subtitle2'>Send Chai to any address</Typography>
+        <Typography variant='h4'>Transfer syUSD</Typography>
+        <Typography variant='subtitle2'>Send syUSD to any address</Typography>
         <Button variant='subtitle2' className={classes.accountBalance}
             style={{textTransform: 'none'}}
       onClick={this.setMax.bind(this)}
-        >{chaiBalance ? `Balance: ${chaiBalance} CHAI` : '-'}</Button>
+        >{syusdBalance ? `Balance: ${syusdBalance} syUSD` : '-'}</Button>
                 <Grid container alignItems="start" spacing={3}>
                   <Grid item xs={12} md={6}>
         <TextField label='Receiving address' placeholder='0x' className={classes.input} margin="normal" variant="outlined" onChange={(event) => {
@@ -99,7 +99,7 @@ class TransferChaiContainer extends React.Component {
                         }} />
         </Grid>
                           <Grid item xs={12} md={6} spacing={3}>
-        <TextField label="CHAI Value"
+        <TextField label="syUSD Value"
             placeholder='0'
             className={classes.input}
             margin="normal"
@@ -108,9 +108,9 @@ class TransferChaiContainer extends React.Component {
             type="number"
             onChange={this.handleInput.bind(this)}
             InputProps={{inputProps: { min: 0 },
-                        endAdornment: <InputAdornment className={classes.endAdornment} position="end">CHAI</InputAdornment>
+                        endAdornment: <InputAdornment className={classes.endAdornment} position="end">syUSD</InputAdornment>
                                        }}
-            helperText={(isSignedIn && transferAmount) ? "Worth: ~" + toDai.bind(this)(transferAmount.mul(10**18)) + " Dai": " "}
+            helperText={(isSignedIn && transferAmount) ? "Worth: ~" + toyUSD.bind(this)(transferAmount.mul(10**18)) + " yUSD": " "}
         />
                   </Grid>
 
@@ -129,4 +129,4 @@ class TransferChaiContainer extends React.Component {
     }
 }
 
-export default withStyles(styles)(withStore(TransferChaiContainer))
+export default withStyles(styles)(withStore(TransfersyUSDContainer))

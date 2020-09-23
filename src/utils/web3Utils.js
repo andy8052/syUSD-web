@@ -1,15 +1,14 @@
 import Web3 from "web3"
 import config from '../config.json'
-import daiABI from '../abi/Dai.abi.json'
-import potABI from '../abi/Pot.abi.json'
-import chaiABI from '../abi/Chai.abi.json'
+import yusdABI from '../abi/yUSD.abi.json'
+import syusdABI from '../abi/syUSD.abi.json'
+
 let Decimal = require('decimal.js-light')
 Decimal = require('toformat')(Decimal)
 
 
-const daiAddress = config.MCD_DAI
-const potAddress = config.MCD_POT
-const chaiAddress = config.CHAI
+const yusdAddress = config.yUSD
+const syusdAddress = config.syUSD
 
 export const WadDecimal = Decimal.clone({
   rounding: 1, // round down
@@ -27,108 +26,102 @@ function toFixed(num, precision) {
     return (+(Math.round(+(num + 'e' + precision)) + 'e' + -precision)).toFixed(precision);
 }
 
-export const getPotDsr = async function() {
+export const getPPS = async function() {
   const { store } = this.props
-  const pot = store.get('potObject')
-  if (!pot) return
-
-  const dsrRaw = await pot.methods.dsr().call()
-  if (dsrRaw === store.get('dsrRaw')) return
-  store.set('dsrRaw', dsrRaw)
-  let dsr = toFixed(new WadDecimal(dsrRaw).div('1e27').pow(secondsInYear).minus(1).mul(100), 2)
-  store.set('dsr', dsr.toString())
+  const syusd = store.get('syusdObject')
+  if (!syusd) return
+  const ppsRaw = await syusd.methods.getPricePerFullShare().call()
+  if (ppsRaw === store.get('ppsRaw')) return
+  store.set('ppsRaw', ppsRaw)
+  let pps = toFixed(new WadDecimal(ppsRaw).div('1e18'), 5)
+  store.set('pps', pps.toString())
 }
 
-export const getPotChi = async function() {
-  const { store } = this.props
-  const pot = store.get('potObject')
-  if (!pot) return
-  const chiRaw = await pot.methods.chi().call()
-  if (chiRaw === store.get('chiRaw')) return
-  store.set('chiRaw', chiRaw)
-  let chi = toFixed(new WadDecimal(chiRaw).div('1e27'), 5)
-  store.set('chi', chi.toString())
-}
-
-export const getDaiAllowance = async function() {
+export const getyUSDAllowance = async function() {
   const { store } = this.props
   const walletAddress = store.get('walletAddress')
-  const dai = store.get('daiObject')
-  if (!dai || !walletAddress) return
-  const daiAllowance = await dai.methods.allowance(walletAddress, chaiAddress).call()
-  store.set('daiAllowance', new WadDecimal(daiAllowance).div('1e18'))
+  const yusd = store.get('yusdObject')
+  if (!yusd || !walletAddress) return
+  const yusdAllowance = await yusd.methods.allowance(walletAddress, syusdAddress).call()
+  store.set('yusdAllowance', new WadDecimal(yusdAllowance).div('1e18'))
 }
 
-export const getDaiBalance = async function() {
+export const getyUSDBalance = async function() {
   const { store } = this.props
   const web3 = store.get('web3')
   const walletAddress = store.get('walletAddress')
-  const dai = store.get('daiObject')
-  if (!dai || !walletAddress) return
-  const daiBalanceRaw = await dai.methods.balanceOf(walletAddress).call()
-  const daiBalanceDecimal = new WadDecimal(daiBalanceRaw).div('1e18')
-  store.set('daiBalanceDecimal', daiBalanceDecimal)
-  const daiBalance = toFixed(parseFloat(web3.utils.fromWei(daiBalanceRaw)),5)
-  store.set('daiBalance', daiBalance)
+  const yusd = store.get('yusdObject')
+  if (!yusd || !walletAddress) return
+  const yusdBalanceRaw = await yusd.methods.balanceOf(walletAddress).call()
+  const yusdBalanceDecimal = new WadDecimal(yusdBalanceRaw).div('1e18')
+  store.set('yusdBalanceDecimal', yusdBalanceDecimal)
+  const yusdBalance = toFixed(parseFloat(web3.utils.fromWei(yusdBalanceRaw)),5)
+  store.set('yusdBalance', yusdBalance)
 }
 
-export const getChaiBalance = async function() {
+export const getsyUSDBalance = async function() {
   const { store } = this.props
   const web3 = store.get('web3')
-  const chai = store.get('chaiObject')
+  const syusd = store.get('syusdObject')
   const walletAddress = store.get('walletAddress')
-  if (!chai || !walletAddress) return
-  const chaiBalanceRaw = await chai.methods.balanceOf(walletAddress).call()
-  store.set('chaiBalanceRaw', chaiBalanceRaw)
-  const chaiBalanceDecimal = new WadDecimal(chaiBalanceRaw).div('1e18')
-  store.set('chaiBalanceDecimal', chaiBalanceDecimal)
-  const chaiBalance = toFixed(parseFloat(web3.utils.fromWei(chaiBalanceRaw)),5)
-  store.set('chaiBalance', chaiBalance)
+  if (!syusd || !walletAddress) return
+  const syusdBalanceRaw = await syusd.methods.balanceOf(walletAddress).call()
+  const syusdUnderlyingBalanceRaw = await syusd.methods.balanceOfUnderlying(walletAddress).call()
+
+  store.set('syusdBalanceRaw', syusdBalanceRaw)
+  const syusdBalanceDecimal = new WadDecimal(syusdBalanceRaw).div('1e18')
+  store.set('syusdBalanceDecimal', syusdBalanceDecimal)
+  const syusdBalance = toFixed(parseFloat(web3.utils.fromWei(syusdBalanceRaw)),5)
+  store.set('syusdBalance', syusdBalance)
+
+  store.set('syusdUnderlyingBalanceRaw', syusdUnderlyingBalanceRaw)
+  const syusdUnderlyingBalanceDecimal = new WadDecimal(syusdUnderlyingBalanceRaw).div('1e18')
+  store.set('syusdUnderlyingBalanceDecimal', syusdUnderlyingBalanceDecimal)
+  const syusdUnderlyingBalance = toFixed(parseFloat(web3.utils.fromWei(syusdUnderlyingBalanceRaw)),5)
+  store.set('syusdUnderlyingBalance', syusdUnderlyingBalance)
 }
 
-export const getChaiTotalSupply = async function() {
+export const getsyUSDTotalSupply = async function() {
   const { store } = this.props
   const web3 = store.get('web3')
-  const chai = store.get('chaiObject')
-  if (!chai) return
-  const chaiTotalSupplyRaw = await chai.methods.totalSupply().call()
-  const chaiTotalSupplyDecimal = new WadDecimal(chaiTotalSupplyRaw)
-  store.set('syUSDTotalSupply', toDai.bind(this)(chaiTotalSupplyDecimal))
+  const syusd = store.get('syusdObject')
+  if (!syusd) return
+  const syusdTotalSupplyRaw = await syusd.methods.totalSupply().call()
+  const syusdTotalSupplyDecimal = new WadDecimal(syusdTotalSupplyRaw)
+  store.set('syusdTotalSupply', syusdTotalSupplyDecimal.div('1e18'))
 }
 
-export const toChai = function(daiAmount) {
-  const daiDecimal = daiAmount ? new WadDecimal(daiAmount).div('1e18') : new WadDecimal(0)
+export const tosyUSD = function(yusdAmount) {
+  const yusdDecimal = yusdAmount ? new WadDecimal(yusdAmount).div('1e18') : new WadDecimal(0)
   const { store } = this.props
-  if (!store.get('chi')) return
-  const chiDecimal = new WadDecimal(store.get('chi'))
-  return toFixed(daiDecimal.div(chiDecimal),5)
+  if (!store.get('pps')) return
+  const ppsDecimal = new WadDecimal(store.get('pps'))
+  return toFixed(yusdDecimal.mul(ppsDecimal),5)
 }
 
 
-export const toDai = function(chaiAmount) {
-  const chaiDecimal = chaiAmount ? new WadDecimal(chaiAmount).div('1e18') : new WadDecimal(0)
+export const toyUSD = function(syusdAmount) {
+  const syusdDecimal = syusdAmount ? new WadDecimal(syusdAmount).div('1e18') : new WadDecimal(0)
   const { store } = this.props
-  if (!store.get('chi')) return
-  const chiDecimal = new WadDecimal(store.get('chi'))
-  return chiDecimal.mul(chaiDecimal)
+  if (!store.get('pps')) return
+  const ppsDecimal = new WadDecimal(store.get('pps'))
+  return toFixed(syusdDecimal.div(ppsDecimal),5)
 }
 
 
 export const setupContracts = function () {
     const { store } = this.props
     const web3 = store.get('web3')
-    store.set('potObject', new web3.eth.Contract(potABI, potAddress))
-    store.set('daiObject', new web3.eth.Contract(daiABI, daiAddress))
-    store.set('chaiObject', new web3.eth.Contract(chaiABI, chaiAddress))
+    store.set('yusdObject', new web3.eth.Contract(yusdABI, yusdAddress))
+    store.set('syusdObject', new web3.eth.Contract(syusdABI, syusdAddress))
 }
 
 export const getData = async function() {
-    getPotDsr.bind(this)()
-    getPotChi.bind(this)()
-    getDaiAllowance.bind(this)()
-    getDaiBalance.bind(this)()
-    getChaiBalance.bind(this)()
-    getChaiTotalSupply.bind(this)()
+    getPPS.bind(this)()
+    getyUSDAllowance.bind(this)()
+    getyUSDBalance.bind(this)()
+    getsyUSDBalance.bind(this)()
+    getsyUSDTotalSupply.bind(this)()
 }
 
 const secondsInYear = WadDecimal(60 * 60 * 24 * 365)
@@ -184,6 +177,6 @@ export const initBrowserWallet = async function(prompt) {
 
 export default {
     initBrowserWallet,
-    toChai,
-    toDai
+    tosyUSD,
+    toyUSD
 }

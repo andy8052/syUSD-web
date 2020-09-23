@@ -3,15 +3,14 @@ import { createStore } from '@spyna/react-store'
 import Web3 from 'web3'
 
 import config from './config.json'
-import daiABI from './abi/Dai.abi.json'
-import potABI from './abi/Pot.abi.json'
-import chaiABI from './abi/Chai.abi.json'
+import yusdABI from './abi/yUSD.abi.json'
+import syusdABI from './abi/syUSD.abi.json'
 
 import NavContainer from './containers/Nav'
 import JoinExitContainer from './containers/JoinExit'
-import ChaiBalanceContainer from './containers/ChaiBalance'
+import BalanceContainer from './containers/Balance'
 import TotalSupplyContainer from './containers/TotalSupply'
-import TransferChaiContainer from './containers/TransferChai'
+import TransfersyUSDContainer from './containers/TransfersyUSD'
 import { setupContracts, getData, WadDecimal } from './utils/web3Utils'
 
 import theme from './theme/theme'
@@ -50,24 +49,26 @@ const initialState = {
     web3: web3,
     web3Failure: false,
     network: 1,
-    potObject: new web3.eth.Contract(potABI, config.MCD_POT),
-    daiObject: new web3.eth.Contract(daiABI, config.MCD_DAI),
-    chaiObject: new web3.eth.Contract(chaiABI, config.CHAI),
+    yusdObject: new web3.eth.Contract(yusdABI, config.yUSD),
+    syusdObject: new web3.eth.Contract(syusdABI, config.syUSD),
     walletAddress: '',
     walletConnecting: false,
     walletType: '',
-    daiBalance: '',
-    daiAllowance: '',
-    daiBalanceDecimal: new WadDecimal(0),
+    yusdBalance: '',
+    yusdAllowance: '',
+    yusdBalanceDecimal: new WadDecimal(0),
     allowanceAvailable: false,
-    chaiBalance: '',
-    chaiBalanceRaw: '',
-    chaiBalanceDecimal: new WadDecimal(0),
+    syusdBalance: '',
+    syusdBalanceRaw: '',
+    syusdBalanceDecimal: new WadDecimal(0),
+    syusdUnderlyingBalance: '',
+    syusdUnderlyingBalanceRaw: '',
+    syusdUnderlyingBalanceDecimal: new WadDecimal(0),
     dsrRaw: '',
     dsr: '',
-    chi: '',
-    chiRaw:'',
-    chaiTotalSupply:'',
+    pps: '',
+    ppsRaw:'',
+    syusdTotalSupply:'',
     joinAmount: new WadDecimal(0),
     exitAmount: new WadDecimal(0),
     joinexitAction: 0,
@@ -92,16 +93,14 @@ class App extends React.Component {
                     <Grid container spacing={3}>
                         <Grid item xs={12}><br/></Grid>
                         <NavContainer />
-
                         <Grid item xs={12} md={6}>
-                            <JoinExitContainer />
+                          <JoinExitContainer />
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <ChaiBalanceContainer />
-
+                          <BalanceContainer />
                         </Grid>
                         <Grid item xs={12}>
-                          <TransferChaiContainer />
+                          <TransfersyUSDContainer />
                         </Grid>
                         <Grid item xs={12} className={classes.footer}>
                           Interacting with the syUSD contract at: <a target="_blank" href={"https://etherscan.io/token/" + config.CHAI} rel="noopener noreferrer">{config.CHAI}</a><br />
