@@ -104,17 +104,15 @@ class App extends React.Component {
                           <TransferChaiContainer />
                         </Grid>
                         <Grid item xs={12} className={classes.footer}>
-                          Interacting with the Chai contract at: <a target="_blank" href={"https://etherscan.io/token/" + config.CHAI} rel="noopener noreferrer">{config.CHAI}</a><br />
+                          Interacting with the syUSD contract at: <a target="_blank" href={"https://etherscan.io/token/" + config.CHAI} rel="noopener noreferrer">{config.CHAI}</a><br />
                           <TotalSupplyContainer />
-                          <a href="/about.html">Learn more about Chai</a>
+                          <a href="/about.html">Learn more about syUSD</a>
                         </Grid>
                         <Grid item xs={12} className={classes.footer}>
-                         chai.money by&nbsp;
-                              <a target="_blank" href="https://twitter.com/martinlundfall" rel="noopener noreferrer">Martin Lundfall</a>,&nbsp;
-                              <a target="_blank" href="https://lucasvo.com" rel="noopener noreferrer">Lucas Vogelsang</a>,&nbsp;
-                              <a target="_blank" href="https://lev.liv.nev.org.uk" rel="noopener noreferrer">Lev Livnev</a>. <br />
-                         Pixel art by <a target="_blank" href="https://twitter.com/abbey_titcomb" rel="noopener noreferrer">Abbey Titcomb</a>
-                         &nbsp; UI at <a href="https://github.com/lucasvo/chui">github.com/lucasvo/chui</a>
+                         syusd.cash by&nbsp;
+                              <a target="_blank" href="https://twitter.com/andy8052" rel="noopener noreferrer">andy8052</a>. <br />
+                         &nbsp; UI at <a href="https://github.com/andy8052/syusd-web">github.com/andy8052/syusd-web</a><br />
+                              forked from <a href="https://github.com/lucasvo/chui">chai.money UI</a> thanks guys
                         </Grid>
                     </Grid>
                 </Container>

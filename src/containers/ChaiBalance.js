@@ -11,8 +11,7 @@ import CardContent from '@material-ui/core/CardContent';
 
 import { toDai } from '../utils/web3Utils';
 
-import logogif from '../assets/logo.gif'
-import logostill from '../assets/logostill.png'
+import yUSDLogo from '../assets/yUSD.png'
 
 const styles = () => ({
     container: {
@@ -40,22 +39,21 @@ class ChaiBalanceContainer extends React.Component {
         const {store} = this.props
         const dsr = store.get('dsr')
         const chi = store.get('chi')
-        const dsrPercent = dsr;
         const chaiBalance = store.get('chaiBalance')
         const chaiBalanceRaw = store.get('chaiBalanceRaw')
         const daiEquiv = chaiBalanceRaw ? toDai.bind(this)(chaiBalanceRaw).toFormat(5) : undefined
       return <Card ><CardContent>
-        <h2>You have {chaiBalance ? daiEquiv : '0'} Dai brewing</h2>
+        <h2>You have {chaiBalance ? `${chaiBalance}` : '0'} syUSD joined</h2>
                  <CardMedia
          component="img"
                   style={{resizeMode: 'contain',     width: 100, float: 'right', paddingRight: 52
 }}
-        src={chaiBalance > 0 ? logogif : logostill}
+        src={yUSDLogo}
          />
 
-        <p>Chai balance: {chaiBalance ? `${chaiBalance}` : '-'}</p>
-        <p>1 CHAI = {chi ? `${chi}` : '?'} DAI</p>
-        <p>Dai Savings Rate: {dsrPercent ? `${dsrPercent}% per year` : '-'}</p>
+        <p>yUSD underlying balance: {chaiBalance ? daiEquiv : '0'}</p>
+        <p>1 syUSD = {chi ? `${chi}` : '?'} yUSD</p>
+        {/* <p>Dai Savings Rate: {dsrPercent ? `${dsrPercent}% per year` : '-'}</p> */}
         <a target="_blank" href="/about.html" rel="noopener noreferrer">Learn more</a>
         </CardContent></Card>
     }

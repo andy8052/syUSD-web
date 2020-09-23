@@ -13,7 +13,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
-import logostill from '../assets/logostill.png'
+import yUSDLogo from '../assets/yUSD.png'
 
 const styles = () => ({
     navContainer: {
@@ -94,11 +94,11 @@ class NavContainer extends React.Component {
             </Dialog>
         <Grid container className={classes.navContainer} alignItems='center'>
           <Grid item sm={12} md={8}>
-            <img src={logostill} className={classes.logo} />
+            <img src={yUSDLogo} className={classes.logo} />
             <div className={classes.title}>
-              <span className={classes.title}>chai.money</span>
+              <span className={classes.title}>syUSD.cash</span>
               <span className={classes.subtitle}>
-                 Accrue interest on your Dai by turning it into Chai.
+                 A stablecoin backed by yUSD.
               </span>
             </div>
           </Grid>
